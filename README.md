@@ -285,6 +285,19 @@ The skeleton wires up the Streamlit boilerplate (session state, page layout, top
 3. **Multi-reviewer fan-out.** Use the `Send` API to escalate the same questions to two reviewers (two threads) and wait for both.
 4. **Auto-edit.** When the human chooses `edit`, call the LLM again to rewrite the review using `human_feedback`, then commit.
 
+Implemented solutions (the scripts run in dry-run mode — no GitHub comment — unless `--post` is passed):
+
+```bash
+# 1. Time-travel: list checkpoints, fork at the HITL pause with a different answer, compare
+uv run python exercises/bonus_1_time_travel.py --thread <id> --choice reject --feedback "needs a migration"
+# 2. Calibration: run N simulated sessions, then compare avg confidence vs. approval rate per bucket
+uv run python exercises/bonus_2_calibration.py --simulate 10
+# 3. Fan-out: Send the escalation questions to several reviewers in parallel, wait for all
+uv run python exercises/bonus_3_fanout.py --pr https://github.com/VinUni-AI20k/PR-Demo/pull/2 --reviewers alice bob
+# 4. Auto-edit: built into exercise 4 / the Streamlit UI — choosing "edit" routes
+#    human_approval → revise (LLM rewrites the review per feedback) → commit
+```
+
 ## FAQ / gotchas
 
 **`interrupt()` raises `GraphInterrupt` instead of pausing.**
